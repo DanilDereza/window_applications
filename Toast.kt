@@ -5,6 +5,7 @@ import javafx.animation.TranslateTransition
 import javafx.application.Application
 import javafx.application.Platform
 import javafx.event.EventHandler
+import javafx.scene.Cursor
 import javafx.scene.Scene
 import javafx.scene.control.Button
 import javafx.scene.control.Label
@@ -32,16 +33,21 @@ class Config {
     var alpha = 0.9
     var openTime = 7000.0
     var imageType = ImageStyle.CIRCLE
-    var title = "TITLE"
-    var message = "MESSAGE"
-    var appName = "APP NAME"
     var image = "https://cdna.artstation.com/p/assets/images/images/019/533/214/large/marcos-vinicius-gritten-gay-italian-1.jpg?1563913019"
     var soundPath = "C:/Users/danil/Desktop/Window applications/Meow.mp3";
     var PosX = "Right"
     var PosY = "Bottom"
-    var textStyle = "-fx-text-fill: red; -fx-font-size: 16px;"
+    var title = "Во-оля"
+    var titleStyle = "-fx-text-fill: Indigo; -fx-font-size: 18px;"
+    var message = "Congratulations"
+    var messageStyle = "-fx-text-fill: red; -fx-font-size: 16px;"
+    var appName = "AliExpression"
+    var appNameStyle = "-fx-text-fill: DarkSlateGray; -fx-font-size: 12px;  -fx-padding: 0 0 0 45;"
     var btn1 = "True"
+    var btn1Style = "-fx-background-color: LimeGreen; -fx-text-fill: Yellow; -fx-font-size: 17px"
     var btn2 = "True"
+    var btn2Style = "-fx-background-color: FireBrick; -fx-text-fill: Black; -fx-font-size: 17px"
+    var cursor = "HAND"
     var TransitionAnimType = "Translate"
 }
 
@@ -55,21 +61,6 @@ class Toast {
     class Builder {
         private var config = Config()
 
-        fun setTitle(str: String): Builder {
-            config.title = str
-            return this
-        }
-
-        fun setMessage(str: String): Builder {
-            config.message = str;
-            return this
-        }
-
-        fun setAppName(str: String): Builder {
-            config.appName = str
-            return this
-        }
-
         fun build(): Toast  {
             var toast = Toast()
             toast.config = config
@@ -82,12 +73,11 @@ class Toast {
     private fun build() {
         windows.initStyle(StageStyle.TRANSPARENT)
 
-
         windows.scene = Scene(root)
         windows.scene.fill = Color.TRANSPARENT
         windows.sizeToScene()
 
-        root.style = "-fx-background-color: #ffffff"
+        root.style = "-fx-background-color: #ffffff; -fx-padding: 10 10 10 10"
 
         setImage()
 
@@ -98,21 +88,24 @@ class Toast {
         val title = Label(config.title)
         val message = Label(config.message)
         val appName = Label(config.appName)
-        title.style = config.textStyle
-        message.style = config.textStyle
-        appName.style = config.textStyle
+        title.style = config.titleStyle
+        message.style = config.messageStyle
+        appName.style = config.appNameStyle
         vbox.children.addAll(title, message, appName)
 
         if(config.btn1 == "True") {
             var button1 = Button("Accept")
-            button1.style = "-fx-background-color: darkred; -fx-text-fill: yellow; -fx-font-size: 17px"
+            button1.style = config.btn1Style
+            button1.cursor = Cursor.cursor(config.cursor)
             hbox.children.add(button1)
         }
         if(config.btn2 == "True") {
             var button2 = Button("Close")
-            button2.style = "-fx-background-color: darkred; -fx-text-fill: yellow; -fx-font-size: 17px"
+            button2.style = config.btn2Style
+            button2.cursor = Cursor.cursor(config.cursor)
             hbox.children.add(button2)
         }
+        hbox.setSpacing(75.0)
         box.children.add(vbox)
         box.children.add(hbox)
         root.center = box
@@ -213,6 +206,9 @@ class Toast {
     }
 
     private fun music() {
+        if(config.soundPath.isEmpty()){
+            return
+        }
         val h =  Media(Paths.get(config.soundPath).toUri().toString());
         val mediaPlayer = MediaPlayer(h);
         mediaPlayer.play();
@@ -240,11 +236,7 @@ class Toast {
 
 class SomeClass: Application() {
     override fun start(p0: Stage?) {
-        var toast = Toast.Builder()
-            .setTitle("T.N.T")
-            .setMessage("Iron Man 2")
-            .setAppName("AC/DC")
-            .build()
+        var toast = Toast.Builder().build()
         toast.start()
     }
     companion object {
